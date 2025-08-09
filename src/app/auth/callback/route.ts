@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -8,13 +8,14 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get('next') ?? '/'
 
   if (code) {
-    const supabase = createServerSupabaseClient()
+    const supabase = await createServerSupabaseClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host')
-      const redirectUrl = forwardedHost
-        ? `https://${forwardedHost}${next}`
+      // Force redirect to HTTP localhost for development
+      const redirectUrl = origin.includes('localhost') 
+        ? `http://localhost:3000${next}`
         : `${origin}${next}`
+      
       return NextResponse.redirect(redirectUrl)
     }
   }
