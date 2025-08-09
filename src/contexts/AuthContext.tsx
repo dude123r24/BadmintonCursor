@@ -23,9 +23,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
 
   const loadUserProfile = async (userId: string) => {
-    const { data, error } = await getUserProfile(userId)
-    if (!error && data) {
-      setProfile(data)
+    try {
+      const { data, error } = await getUserProfile(userId)
+      if (!error && data) {
+        setProfile(data)
+      } else if (error) {
+        // Table doesn't exist yet - this is expected before running the schema
+        console.log('User profiles table not found - run database schema first')
+      }
+    } catch (err) {
+      console.error('Error loading user profile:', err)
     }
   }
 
@@ -38,14 +45,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-      
-      if (session?.user) {
-        await loadUserProfile(session.user.id)
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        setUser(session?.user ?? null)
+        
+        if (session?.user) {
+          await loadUserProfile(session.user.id)
+        }
+      } catch (err) {
+        console.error('Error getting initial session:', err)
+      } finally {
+        setLoading(false)
       }
-      
-      setLoading(false)
     }
 
     getInitialSession()
@@ -53,15 +64,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        setUser(session?.user ?? null)
-        
-        if (session?.user) {
-          await loadUserProfile(session.user.id)
-        } else {
-          setProfile(null)
+        try {
+          setUser(session?.user ?? null)
+          
+          if (session?.user) {
+            await loadUserProfile(session.user.id)
+          } else {
+            setProfile(null)
+          }
+        } catch (err) {
+          console.error('Error in auth state change:', err)
+        } finally {
+          setLoading(false)
         }
-        
-        setLoading(false)
       }
     )
 

@@ -37,6 +37,9 @@ export default function Home() {
             </div>
             {user && (
               <div className="flex items-center space-x-4">
+                <Link href="/clubs" className="text-sm text-gray-600 hover:text-indigo-600 transition-colors">
+                  Clubs
+                </Link>
                 <span className="text-sm text-gray-600">Welcome, {user.email}</span>
                 <button
                   onClick={signOut}
@@ -73,18 +76,18 @@ export default function Home() {
                     Ready to manage your club?
                   </h2>
                   <p className="text-gray-600 mb-6">
-                    You&apos;re successfully signed in. Access your dashboard to start managing sessions, 
+                    You&apos;re successfully signed in. Access your clubs to start managing sessions, 
                     tracking games, and organizing tournaments.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Link
-                      href="/dashboard"
+                      href="/clubs"
                       className="inline-flex items-center px-8 py-4 border border-transparent text-base font-medium rounded-xl text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                       <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                       </svg>
-                      Go to Dashboard
+                      Manage Clubs
                     </Link>
                     <button
                       onClick={signOut}
